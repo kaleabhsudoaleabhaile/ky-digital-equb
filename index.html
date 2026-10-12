@@ -1,85 +1,264 @@
-DOCTYPE html>
+<!DOCTYPE html>
 <html lang="am">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>K Y Digital Equb - Live Draw</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>K Y Digital Equb - Live Draw</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body>
+<body class="bg-gray-900 text-white min-h-screen font-sans pb-10">
 
-  <div class="container">
     <!-- Header -->
-    <header class="app-header">
-      <h2>💸 K Y Digital Equb</h2>
-      <p>የእርስዎ ታማኝ ዲጂታል ዕቁብ ማኔጀር</p>
+    <header class="bg-gray-800 border-b border-gray-700 p-4 sticky top-0 z-50 shadow-md">
+        <div class="max-w-md mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-bold text-amber-400 flex items-center gap-2">
+                <i class="fa-solid fa-coins"></i> K Y Digital Equb
+            </h1>
+            <button onclick="toggleAdminPrompt()" class="bg-gray-700 hover:bg-gray-600 text-amber-400 border border-amber-400/40 text-xs px-3 py-1.5 rounded-lg flex items-center gap-1 transition">
+                <i class="fa-solid fa-lock" id="admin-icon"></i>
+                <span id="admin-btn-text">አድሚን ግባ</span>
+            </button>
+        </div>
     </header>
 
-    <!-- Stats -->
-    <div class="card stats-card">
-      <div class="stat-box">
-        <span class="stat-icon">👥</span>
-        <div>
-          <small>አጠቃላይ አባላት</small>
-          <h3 id="totalMembersCount">0</h3>
+    <main class="max-w-md mx-auto p-4 space-y-4">
+
+        <!-- Stats Card -->
+        <div class="bg-gray-800 p-4 rounded-xl border border-gray-700 flex justify-between items-center shadow-sm">
+            <div>
+                <p class="text-xs text-gray-400">አጠቃላይ አባላት</p>
+                <h3 id="totalMembersCount" class="text-2xl font-bold text-white">0</h3>
+            </div>
+            <div class="bg-amber-500/10 text-amber-400 p-3 rounded-xl">
+                <i class="fa-solid fa-users text-xl"></i>
+            </div>
         </div>
-      </div>
-    </div>
 
-    <!-- Add Member Form -->
-    <div class="card">
-      <h3>👤+ አዲስ አባል መመዝገቢያ (Admin)</h3>
-      <div class="form-group">
-        <input type="text" id="memberNameInput" placeholder="የአባል ስም እና አባት ስም" required>
-      </div>
-      <div class="form-group">
-        <select id="memberGenderInput" class="form-control" style="width: 100%; padding: 10px; background: #1a1a2e; color: #fff; border: 1px solid #333; border-radius: 5px;">
-          <option value="ወንድ">ወንድ</option>
-          <option value="ሴት">ሴት</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <input type="text" value="ቋሚ የዕቁብ መጠን: 50 ብር" disabled style="opacity: 0.8; font-weight: bold;">
-      </div>
-      <button class="btn btn-primary" onclick="addMember()">አባል አስገባ</button>
-    </div>
+        <!-- Admin Only: Add Member Form -->
+        <div id="adminFormCard" class="hidden bg-gray-800 p-4 rounded-xl border border-amber-500/50 shadow-lg space-y-3">
+            <h3 class="text-md font-semibold text-amber-400 flex items-center gap-2">
+                <i class="fa-solid fa-user-plus"></i> አዲስ አባል መመዝገቢያ (Admin)
+            </h3>
+            <div>
+                <input type="text" id="memberNameInput" placeholder="የአባል ሙሉ ስም" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2.5 text-sm focus:outline-none focus:border-amber-400 text-white">
+            </div>
+            <div class="flex gap-2">
+                <select id="memberGenderInput" class="w-1/2 bg-gray-900 border border-gray-700 rounded-lg p-2.5 text-sm focus:outline-none focus:border-amber-400 text-white">
+                    <option value="ወንድ">ወንድ</option>
+                    <option value="ሴት">ሴት</option>
+                </select>
+                <input type="text" value="የዕቁብ መጠን: 50 ብር" disabled class="w-1/2 bg-gray-900/50 border border-gray-800 rounded-lg p-2.5 text-xs text-gray-400">
+            </div>
+            <button onclick="addNewMember()" class="w-full bg-amber-500 hover:bg-amber-600 text-gray-950 font-bold p-2.5 rounded-lg text-sm transition">
+                አባል አክል
+            </button>
+        </div>
 
-    <!-- Live Draw Section -->
-    <div class="card">
-      <h3>🏆 የቀጥታ (Live) እጣ ማውጫ</h3>
-      <div class="draw-box" id="drawDisplay">
-        <p id="winnerText">🎲 እጣ ለማውጣት ከታች ያለውን በተን ይጫኑ</p>
-      </div>
-      <button class="btn btn-accent" id="spinBtn" onclick="triggerLiveSpin()">🔀 እጣ አውጣ!</button>
-    </div>
+        <!-- Live Draw Section -->
+        <div class="bg-gray-800 p-4 rounded-xl border border-gray-700 space-y-3 shadow-sm">
+            <h3 class="text-md font-semibold text-cyan-400 flex items-center gap-2">
+                <i class="fa-solid fa-trophy"></i> የቀጥታ (Live) እጣ ማውጫ
+            </h3>
+            <div id="drawDisplay" class="bg-gray-900 border-2 border-dashed border-cyan-500/40 p-4 rounded-xl text-center">
+                <p id="winnerText" class="text-sm text-gray-300">🎲 እጣ ለማውጣት ከታች ያለውን አዝራር ተጫን</p>
+            </div>
+            <button id="spinBtn" onclick="triggerLiveSpin()" class="w-full bg-cyan-500 hover:bg-cyan-600 text-gray-950 font-bold p-2.5 rounded-lg text-sm transition">
+                🔀 እጣ አውጣ!
+            </button>
+        </div>
 
-    <!-- Members Table -->
-    <div class="card">
-      <h3>📑 የአባላት የ 5 ቀናት ክፍያ ሰንጠረዥ</h3>
-      <div class="table-responsive">
-        <table>
-          <thead>
-            <tr>
-              <th>ስም</th>
-              <th>ፆታ</th>
-              <th>መጠን</th>
-              <th>ቀን 1</th>
-              <th>ቀን 2</th>
-              <th>ቀን 3</th>
-              <th>ቀን 4</th>
-              <th>ቀን 5</th>
-              <th>እጣ</th>
-              <th>እርምጃ</th>
-            </tr>
-          </thead>
-          <tbody id="membersList">
-            <!-- አባላት እዚህ ይደረደራሉ -->
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
+        <!-- Members Table -->
+        <div class="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-sm">
+            <h3 class="text-md font-semibold text-gray-200 mb-3 flex items-center gap-2">
+                <i class="fa-solid fa-list-check"></i> የአባላት የ 5 ቀናት ክፍያ ሰንጠረዥ
+            </h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-xs text-left text-gray-300">
+                    <thead class="bg-gray-900 text-gray-400 uppercase">
+                        <tr>
+                            <th class="p-2">ስም</th>
+                            <th class="p-2 text-center">1</th>
+                            <th class="p-2 text-center">2</th>
+                            <th class="p-2 text-center">3</th>
+                            <th class="p-2 text-center">4</th>
+                            <th class="p-2 text-center">5</th>
+                            <th id="adminActionHeader" class="p-2 text-center hidden">ድርጊት</th>
+                        </tr>
+                    </thead>
+                    <tbody id="membersList" class="divide-y divide-gray-700">
+                        <!-- Dynamic content via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
-  <script src="app.js"></script>
+    </main>
+
+    <!-- Firebase SDKs -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, set, push, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBaCoVoAfDCJ_dHoZ1z-...",
+            authDomain: "ky-digital-equb.firebaseapp.com",
+            databaseURL: "https://ky-digital-equb-default-rtdb.firebaseio.com",
+            projectId: "ky-digital-equb",
+            storageBucket: "ky-digital-equb.appspot.com",
+            messagingSenderId: "744715135270",
+            appId: "1:744715135270:web:edb769..."
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        const ADMIN_PASS = "182418";
+        let isAdmin = false;
+        let membersData = {};
+
+        // Admin Toggle
+        window.toggleAdminPrompt = function() {
+            if (isAdmin) {
+                isAdmin = false;
+                document.getElementById("adminFormCard").classList.add("hidden");
+                document.getElementById("adminActionHeader").classList.add("hidden");
+                document.getElementById("admin-btn-text").innerText = "አድሚን ግባ";
+                document.getElementById("admin-icon").className = "fa-solid fa-lock";
+                renderMembers();
+                return;
+            }
+            const pass = prompt("የአድሚን የይለፍ ቃል ያስገቡ:");
+            if (pass === ADMIN_PASS) {
+                isAdmin = true;
+                document.getElementById("adminFormCard").classList.remove("hidden");
+                document.getElementById("adminActionHeader").classList.remove("hidden");
+                document.getElementById("admin-btn-text").innerText = "ውጣ";
+                document.getElementById("admin-icon").className = "fa-solid fa-unlock";
+                renderMembers();
+            } else if (pass !== null) {
+                alert("የተሳሳተ የይለፍ ቃል!");
+            }
+        };
+
+        // Realtime Members Sync
+        const membersRef = ref(db, "members");
+        onValue(membersRef, (snapshot) => {
+            membersData = snapshot.val() || {};
+            renderMembers();
+        });
+
+        // Realtime Draw Sync
+        const drawRef = ref(db, "drawResult");
+        onValue(drawRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data && data.text) {
+                document.getElementById("winnerText").innerHTML = data.text;
+            }
+        });
+
+        // Add Member
+        window.addNewMember = function() {
+            const nameInput = document.getElementById("memberNameInput");
+            const genderInput = document.getElementById("memberGenderInput");
+
+            if (!nameInput.value.trim()) {
+                alert("እባክዎን ስም ያስገቡ!");
+                return;
+            }
+
+            const newMemberRef = push(ref(db, "members"));
+            set(newMemberRef, {
+                name: nameInput.value.trim(),
+                gender: genderInput.value,
+                days: [false, false, false, false, false]
+            });
+
+            nameInput.value = "";
+        };
+
+        // Toggle Payment Checkbox
+        window.togglePay = function(id, dayIndex) {
+            if (!isAdmin) {
+                alert("ክፍያ ለማስተካከል የአድሚን መግቢያ ያስፈልጋል!");
+                return;
+            }
+            const currentStatus = membersData[id].days[dayIndex];
+            update(ref(db, `members/${id}/days`), {
+                [dayIndex]: !currentStatus
+            });
+        };
+
+        // Delete Member
+        window.deleteMember = function(id) {
+            if (!isAdmin) return;
+            if (confirm("ይህንን አባል መሰረዝ እርግጠኛ ነዎት?")) {
+                remove(ref(db, `members/${id}`));
+            }
+        };
+
+        // Trigger Spin
+        window.triggerLiveSpin = function() {
+            if (!isAdmin) {
+                alert("እጣ ለማውጣት የአድሚን መግቢያ ያስፈልጋል!");
+                return;
+            }
+
+            const keys = Object.keys(membersData);
+            if (keys.length === 0) {
+                alert("ምንም የተመዘገበ አባል የለም!");
+                return;
+            }
+
+            let counter = 0;
+            const spinInterval = setInterval(() => {
+                const randomKey = keys[Math.floor(Math.random() * keys.length)];
+                const randomMember = membersData[randomKey];
+                document.getElementById("winnerText").innerHTML = `<span class="text-amber-400 font-bold text-lg">${randomMember.name}</span>... 🎲`;
+                counter++;
+
+                if (counter > 15) {
+                    clearInterval(spinInterval);
+                    const winnerKey = keys[Math.floor(Math.random() * keys.length)];
+                    const winner = membersData[winnerKey];
+                    const winMsg = `🎉 እንኳን ደስ አለዎት! የዛሬው አሸናፊ፦ <br><span class="text-amber-400 font-bold text-xl">${winner.name}</span> 🏆`;
+                    set(drawRef, { text: winMsg });
+                }
+            }, 100);
+        };
+
+        // Render Table
+        function renderMembers() {
+            const list = document.getElementById("membersList");
+            list.innerHTML = "";
+            const keys = Object.keys(membersData);
+            document.getElementById("totalMembersCount").innerText = keys.length;
+
+            keys.forEach((key) => {
+                const member = membersData[key];
+                const tr = document.createElement("tr");
+
+                let daysHtml = "";
+                member.days.forEach((paid, idx) => {
+                    daysHtml += `
+                        <td class="p-2 text-center">
+                            <input type="checkbox" ${paid ? 'checked' : ''} ${!isAdmin ? 'disabled' : ''} onclick="togglePay('${key}', ${idx})" class="w-4 h-4 accent-amber-500 rounded cursor-pointer">
+                        </td>
+                    `;
+                });
+
+                let actionHtml = isAdmin ? `<td class="p-2 text-center"><button onclick="deleteMember('${key}')" class="text-red-400 hover:text-red-300"><i class="fa-solid fa-trash"></i></button></td>` : '';
+
+                tr.innerHTML = `
+                    <td class="p-2 font-medium text-white">${member.name}</td>
+                    ${daysHtml}
+                    ${actionHtml}
+                `;
+                list.appendChild(tr);
+            });
+        }
+    </script>
 </body>
 </html>
